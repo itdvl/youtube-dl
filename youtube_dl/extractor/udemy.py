@@ -28,12 +28,12 @@ from ..utils import (
 class UdemyIE(InfoExtractor):
     IE_NAME = 'udemy'
     _VALID_URL = r'''(?x)
-                    https?://
+                  https?://
                         (?:[^/]+\.)?udemy\.com/
                         (?:
-                            [^#]+\#/lecture/|
+                            [^#]+/lecture/|
                             lecture/view/?\?lectureId=|
-                            [^/]+/learn/v4/t/lecture/
+                            [^/]+/learn/lecture/
                         )
                         (?P<id>\d+)
                     '''
@@ -42,7 +42,7 @@ class UdemyIE(InfoExtractor):
     _NETRC_MACHINE = 'udemy'
 
     _TESTS = [{
-        'url': 'https://www.udemy.com/java-tutorial/#/lecture/172757',
+        'url': 'https://www.udemy.com/course/ava-tutorial/lecture/172757',
         'md5': '98eda5b657e752cf945d8445e261b5c5',
         'info_dict': {
             'id': '160614',
@@ -54,18 +54,18 @@ class UdemyIE(InfoExtractor):
         'skip': 'Requires udemy account credentials',
     }, {
         # new URL schema
-        'url': 'https://www.udemy.com/electric-bass-right-from-the-start/learn/v4/t/lecture/4580906',
+        'url': 'https://www.udemy.com/course/electric-bass-right-from-the-start/learn/lecture/4580906',
         'only_matching': True,
     }, {
         # no url in outputs format entry
-        'url': 'https://www.udemy.com/learn-web-development-complete-step-by-step-guide-to-success/learn/v4/t/lecture/4125812',
+        'url': 'https://www.udemy.com/course/learn-web-development-complete-step-by-step-guide-to-success/learn/lecture/4125812',
         'only_matching': True,
     }, {
         # only outputs rendition
-        'url': 'https://www.udemy.com/how-you-can-help-your-local-community-5-amazing-examples/learn/v4/t/lecture/3225750?start=0',
+        'url': 'https://www.udemy.com/course/how-you-can-help-your-local-community-5-amazing-examples/learn/lecture/3225750?start=0',
         'only_matching': True,
     }, {
-        'url': 'https://wipro.udemy.com/java-tutorial/#/lecture/172757',
+        'url': 'https://wipro.udemy.com/course/java-tutorial/lecture/172757',
         'only_matching': True,
     }]
 
@@ -87,7 +87,7 @@ class UdemyIE(InfoExtractor):
             return compat_urlparse.urljoin(base_url, url) if not url.startswith('http') else url
 
         checkout_url = unescapeHTML(self._search_regex(
-            r'href=(["\'])(?P<url>(?:https?://(?:www\.)?udemy\.com)?/(?:payment|cart)/checkout/.+?)\1',
+            r'href=(["\'])(?P<url>(?:https?://(?:www\.)?udemy\.com/course/)?/(?:payment|cart)/checkout/.+?)\1',
             webpage, 'checkout url', group='url', default=None))
         if checkout_url:
             raise ExtractorError(
@@ -421,12 +421,12 @@ class UdemyIE(InfoExtractor):
 
 class UdemyCourseIE(UdemyIE):
     IE_NAME = 'udemy:course'
-    _VALID_URL = r'https?://(?:[^/]+\.)?udemy\.com/(?P<id>[^/?#&]+)'
+    _VALID_URL = r'https?://(?:[^/]+\.)?udemy\.com/course/(?P<id>[^/?#&]+)'
     _TESTS = [{
-        'url': 'https://www.udemy.com/java-tutorial/',
+        'url': 'https://www.udemy.com/course/java-tutorial/',
         'only_matching': True,
     }, {
-        'url': 'https://wipro.udemy.com/java-tutorial/',
+        'url': 'https://wipro.udemy.com/course/java-tutorial/',
         'only_matching': True,
     }]
 
@@ -465,7 +465,7 @@ class UdemyCourseIE(UdemyIE):
                 if lecture_id:
                     entry = {
                         '_type': 'url_transparent',
-                        'url': 'https://www.udemy.com/%s/learn/v4/t/lecture/%s' % (course_path, entry['id']),
+                        'url': 'https://www.udemy.com/course/%s/learn/lecture/%s' % (course_path, entry['id']),
                         'title': entry.get('title'),
                         'ie_key': UdemyIE.ie_key(),
                     }
